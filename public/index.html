@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Tamil Letters Studio — Google TTS Learning App</title>
+  <meta name="description" content="Learn Tamil letters, syllables, and words with Google TTS audio, 7 levels, responsive keypad, and instant speech synthesis.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta+Malar:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Stylesheet with Cache Busting -->
+  <link rel="stylesheet" href="css/style.css?v=20261003_1200">
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand-logo">
+        <div class="logo-badge">
+          <span class="tamil-logo-char">அ</span>
+        </div>
+        <div class="brand-info">
+          <h1>Tamil <span class="gradient-text">Letters Studio</span></h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Levels Selector in Header -->
+    <div class="header-center">
+      <div class="levels-pills" id="levelsPills">
+        <button class="level-pill active" data-level="1">Level 1</button>
+        <button class="level-pill" data-level="2">Level 2</button>
+        <button class="level-pill" data-level="3">Level 3</button>
+        <button class="level-pill" data-level="4">Level 4</button>
+        <button class="level-pill" data-level="5">Level 5</button>
+        <button class="level-pill" data-level="6">Level 6</button>
+        <button class="level-pill" data-level="7">Level 7</button>
+      </div>
+    <div class="test-config">
+      <label for="questionCountSlider">Questions: <span id="questionCountValue">5</span></label>
+      <input type="range" id="questionCountSlider" min="5" max="50" value="5" />
+      <label for="wordLengthSlider">Min Length: <span id="wordLengthValue">2</span></label>
+      <input type="range" id="wordLengthSlider" min="2" max="20" value="2" />
+    </div>
+    </div>
+
+    <div class="header-right">
+      <!-- TTS Voice Mode Status / Speed -->
+      <div class="tts-status-pill" title="Google TTS Audio Active">
+        <span class="tts-dot"></span>
+        <span>Google TTS</span>
+      </div>
+
+      <!-- Speed Selector -->
+      <div class="speed-selector" title="Speech Speed">
+        <button class="speed-btn" data-speed="0.8" id="speedSlow">0.8x</button>
+        <button class="speed-btn active" data-speed="1.0" id="speedNormal">1.0x</button>
+        <button class="speed-btn" data-speed="1.2" id="speedFast">1.2x</button>
+      </div>
+
+      <!-- Theme Toggle -->
+      <button class="icon-btn theme-toggle" id="themeToggleBtn" title="Toggle Theme" aria-label="Toggle Theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+
+      <!-- Fullscreen Toggle -->
+      <button class="icon-btn fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen (F)" aria-label="Toggle Fullscreen">
+        <i class="fa-solid fa-expand" id="fullscreenIcon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main App Layout (Unified Studio with Mode Switcher: Buttons vs List) -->
+  <main class="app-layout">
+    
+    <div class="main-studio">
+      <!-- Display Screen Section -->
+      <section class="display-card" id="displayCard">
+        <div class="display-top-bar">
+          <span class="display-label" id="displayLabel"><i class="fa-solid fa-tv"></i> Display</span>
+          <div class="meta-preview">
+            <span class="meta-phonetics" id="phoneticsText">—</span>
+            <span class="meta-meaning" id="meaningText">—</span>
+          </div>
+        </div>
+
+        <!-- Test Mode Dictation Header (active in test mode) -->
+        <div class="test-header-bar hidden" id="testHeaderBar">
+          <div class="test-progress-info">
+            <span class="test-badge"><i class="fa-solid fa-book-bookmark"></i> Word Dictation</span>
+            <span class="test-question-counter" id="testQuestionCounter">Word 1 of 5</span>
+            <span class="test-score-pill" id="testScorePill">Score: 0</span>
+          </div>
+          <div class="test-actions-group">
+            <button class="test-listen-btn" id="testListenBtn" type="button" title="Listen to Dictated Word Again">
+              <i class="fa-solid fa-volume-high"></i>
+              <span>Listen Again</span>
+            </button>
+            <button class="test-submit-btn" id="testSubmitBtn" type="button" title="Check Typed Word">
+              <i class="fa-solid fa-circle-check"></i>
+              <span>Check</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Text Screen -->
+        <div class="display-screen" id="displayScreen">
+          <div class="display-placeholder" id="displayPlaceholder">
+            <span>Click any letter or sample item to write & speak</span>
+          </div>
+          <div class="display-text hidden" id="displayText"></div>
+          <div class="display-result hidden" id="displayResult"></div>
+        </div>
+
+        <!-- Action Controls Bar (Practice/Test Mode Toggle, Clear, Read, Backspace) -->
+        <div class="action-controls-row">
+          <!-- 1. Practice & Test Mode Toggle Button -->
+          <button class="btn btn-action btn-mode-toggle" id="modeToggleBtn" title="Current: Practice Mode (Click to switch to Test Mode)">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span id="modeToggleText">Practice Mode</span>
+          </button>
+
+          <!-- 2. Clear Button (Clear first) -->
+          <button class="btn btn-action btn-clear" id="clearBtn" title="Clear Display">
+            <i class="fa-solid fa-trash-can"></i>
+            <span>Clear</span>
+          </button>
+
+          <!-- 3. Read Button (Read next) -->
+          <button class="btn btn-action btn-read" id="readBtn" title="Read Display Content (Google TTS)">
+            <i class="fa-solid fa-volume-high"></i>
+            <span>Read</span>
+          </button>
+
+          <!-- 4. Backspace Button -->
+          <button class="btn btn-action btn-backspace" id="backspaceBtn" title="Delete Last Letter">
+            <i class="fa-solid fa-delete-left"></i>
+            <span>Backspace</span>
+          </button>
+
+          <!-- 5. Space Button -->
+          <button class="btn btn-action btn-space" id="spaceBtn" title="Insert Space">
+            <i class="fa-solid fa-grip-lines"></i>
+            <span>Space</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- View Mode Tabs Bar: User can choose between Buttons and List -->
+      <div class="view-mode-tabs-bar" id="viewModeTabsBar" role="tablist">
+        <button class="view-mode-tab-btn" id="viewModeButtonsBtn" type="button" role="tab" aria-selected="false" data-mode="buttons">
+          <i class="fa-solid fa-keyboard"></i>
+          <span>Buttons (விசைப்பலகை)</span>
+        </button>
+        <button class="view-mode-tab-btn active" id="viewModeListBtn" type="button" role="tab" aria-selected="true" data-mode="list">
+          <i class="fa-solid fa-list-ul"></i>
+          <span>List (பட்டியல்)</span>
+          <span class="tab-count-badge" id="listTotalCountBadge">0</span>
+        </button>
+      </div>
+
+      <!-- Mode Panel 1: Keypad Section (Buttons Mode) -->
+      <section class="keypad-card view-mode-panel" id="keypadCard">
+        <div class="keypad-header">
+          <h2 id="keypadTitle">Level 1 Letters</h2>
+        </div>
+
+        <!-- Dynamic Letter Grid Container with 4 buttons in first row (< அ ஆ >) -->
+        <div class="letter-grid-wrapper" id="letterGridWrapper">
+          <!-- Row 1: < அ ஆ > -->
+          <div class="letter-row">
+            <button class="nav-arrow-btn" id="prevSetBtn" type="button" title="Previous Set">&lt;</button>
+            <button class="letter-btn" data-char="அ" type="button"><span class="letter-char">அ</span></button>
+            <button class="letter-btn" data-char="ஆ" type="button"><span class="letter-char">ஆ</span></button>
+            <button class="nav-arrow-btn" id="nextSetBtn" type="button" title="Next Set">&gt;</button>
+          </div>
+          <!-- Row 2: ட் ட டா -->
+          <div class="letter-row">
+            <button class="letter-btn" data-char="ட்" type="button"><span class="letter-char">ட்</span></button>
+            <button class="letter-btn" data-char="ட" type="button"><span class="letter-char">ட</span></button>
+            <button class="letter-btn" data-char="டா" type="button"><span class="letter-char">டா</span></button>
+          </div>
+          <!-- Row 3: ப் ப பா -->
+          <div class="letter-row">
+            <button class="letter-btn" data-char="ப்" type="button"><span class="letter-char">ப்</span></button>
+            <button class="letter-btn" data-char="ப" type="button"><span class="letter-char">ப</span></button>
+            <button class="letter-btn" data-char="பா" type="button"><span class="letter-char">பா</span></button>
+          </div>
+          <!-- Row 4: ம் ம மா -->
+          <div class="letter-row">
+            <button class="letter-btn" data-char="ம்" type="button"><span class="letter-char">ம்</span></button>
+            <button class="letter-btn" data-char="ம" type="button"><span class="letter-char">ம</span></button>
+            <button class="letter-btn" data-char="மா" type="button"><span class="letter-char">மா</span></button>
+          </div>
+          <!-- Row 5: ய் ய யா -->
+          <div class="letter-row">
+            <button class="letter-btn" data-char="ய்" type="button"><span class="letter-char">ய்</span></button>
+            <button class="letter-btn" data-char="ய" type="button"><span class="letter-char">ய</span></button>
+            <button class="letter-btn" data-char="யா" type="button"><span class="letter-char">யா</span></button>
+          </div>
+        </div>
+
+        <!-- Practice Listen Bar: shown when user is trying to type a word -->
+        <div class="practice-listen-bar hidden" id="practiceListenBar">
+          <div class="practice-listen-word">
+            <span class="practice-listen-label">Typing:</span>
+            <span class="practice-listen-target" id="practiceListenTarget">—</span>
+          </div>
+          <div class="practice-listen-actions">
+            <button class="btn practice-listen-btn" id="practiceListenAgainBtn" type="button" title="Hear the word again">
+              <i class="fa-solid fa-ear-listen"></i>
+              <span>Listen Again</span>
+            </button>
+            <button class="btn practice-giveup-btn" id="practiceGiveUpBtn" type="button" title="Skip this word">
+              <i class="fa-solid fa-forward-step"></i>
+              <span>Skip</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mode Panel 2: List Section (Words & Syllables) -->
+      <section class="list-card view-mode-panel active" id="listCard">
+        <!-- Set Pills Row: navigate sets from within the list view -->
+        <div class="list-set-pills-row" id="listSetPillsRow">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Sub-Tabs Navigation Header (Words & Syllables) -->
+        <div class="pane-tabs-bar" role="tablist">
+          <button class="pane-tab-btn active" id="tabWordsBtn" type="button" role="tab" aria-selected="true" data-tab="words">
+            <i class="fa-solid fa-book-bookmark"></i>
+            <span>Words (சொற்கள்)</span>
+            <span class="tab-count-badge" id="wordsCountBadge">0</span>
+          </button>
+          <button class="pane-tab-btn" id="tabSyllablesBtn" type="button" role="tab" aria-selected="false" data-tab="syllables">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Syllables (அசைகள்)</span>
+            <span class="tab-count-badge" id="syllablesCountBadge">0</span>
+          </button>
+        </div>
+
+        <!-- Tab Content: Words -->
+        <div class="pane-tab-content active" id="wordsTabContent" role="tabpanel">
+          <div class="word-items-list" id="wordChipsList">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Tab Content: Syllables -->
+        <div class="pane-tab-content" id="syllablesTabContent" role="tabpanel">
+          <div class="syllable-chips-list" id="syllableChipsList">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Audio Equalizer Wave (Floats subtly when speaking) -->
+  <div class="audio-wave-toast" id="audioWaveToast">
+    <div class="wave-stick"></div>
+    <div class="wave-stick"></div>
+    <div class="wave-stick"></div>
+    <div class="wave-stick"></div>
+    <span class="wave-text" id="waveText">Google TTS Speaking...</span>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Test Result Score Modal / Dialog -->
+  <div class="test-score-modal hidden" id="testScoreModal">
+    <div class="test-score-card">
+      <div class="score-badge-icon" id="scoreBadgeIcon">🏆</div>
+      <h3 class="score-title" id="scoreTitle">Word Dictation Test Complete!</h3>
+      <div class="score-number-display">
+        <span class="score-big" id="scoreBig">5</span>
+        <span class="score-total">/ 5</span>
+        <span class="score-percent" id="scorePercent">(100%)</span>
+      </div>
+      <p class="score-praise" id="scorePraise">Outstanding! Perfect spelling!</p>
+      
+      <div class="score-review-container" id="scoreReviewContainer">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="score-modal-actions">
+        <button class="btn btn-action btn-retake-test" id="retakeTestBtn" type="button">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>Retake Test</span>
+        </button>
+        <button class="btn btn-action btn-practice-mode" id="scoreExitBtn" type="button">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Back to Practice</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App JavaScript with Cache Busting -->
+  <script src="js/app.js?v=20261003_1200"></script>
+</body>
+</html>

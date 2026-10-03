@@ -1,0 +1,24 @@
+[
+  {
+    "id": "letter-1",
+    "title": "Welcome to Portable Letters",
+    "recipient": "Team & Collaborators",
+    "sender": "Application Author",
+    "date": "2026-09-30",
+    "category": "Official",
+    "status": "Published",
+    "content": "Welcome to your self-contained, portable Node application!\n\nThis application is completely portable. You can copy the entire folder to any Windows machine and launch it immediately with start.bat without installing Node or NPM.\n\nEnjoy fast local development and seamless distribution.",
+    "updatedAt": "2026-09-30T07:26:47.542Z"
+  },
+  {
+    "id": "letter-2",
+    "title": "Project Handover & Release Note",
+    "recipient": "Deployment Operations",
+    "sender": "Engineering Lead",
+    "date": "2026-09-30",
+    "category": "Technical",
+    "status": "Draft",
+    "content": "All portable server features including static file streaming, gzip compression, REST API, letter drafting, audio synthesis support, and export tools are operational.",
+    "updatedAt": "2026-09-30T07:26:47.542Z"
+  }
+]

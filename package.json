@@ -1,0 +1,27 @@
+{
+  "name": "tamil-letters-studio",
+  "version": "1.0.0",
+  "description": "Interactive Tamil Letters, Syllables & Words Studio with Google TTS, Responsive Keypad & Dictation Test",
+  "main": "server/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js"
+  },
+  "keywords": [
+    "tamil",
+    "tamil-letters",
+    "tamil-learning",
+    "tamil-education",
+    "google-tts",
+    "language-learning",
+    "speech-synthesis",
+    "dictation",
+    "node"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "google-tts-api": "^2.0.2"
+  }
+}
